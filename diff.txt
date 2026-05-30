@@ -1,0 +1,43 @@
+--- old
++++ new
+@@ -14,2 +14,3 @@
+ 7. [Bright Data Integration — The Nervous System](#7-bright-data-integration--the-nervous-system)
++   - [Why Bright Data Is Unremovable](#why-bright-data-is-unremovable--the-exact-dependency-chain)
+ 8. [The Causal Engine — Math & Code](#8-the-causal-engine--math--code)
+@@ -489,2 +490,36 @@
+ 
++### Why Bright Data Is Unremovable — The Exact Dependency Chain
++
++This is the critical answer to any judge who asks "how is Bright Data actually integrated?" The answer is: pull the plug on Bright Data and the engine goes completely silent. Here is why, tool by tool.
++
++**Tool 1 — SERP API: the trip wire**
++
++Runs every 15 minutes in a background thread. It fires 5 Google News searches — one per chain node — with queries like `"bauxite tariff supply disruption OR sanctions"`. Google News blocks direct scraping aggressively — plain `requests.get()` gets CAPTCHAed or rate-limited within minutes. Bright Data handles the bypass, returns structured JSON with headlines and snippets, and `score_shock()` runs a keyword + negation filter to produce a score from 0.0 to 1.0. If the score crosses 0.6, it is the **only** trigger that wakes up the engine. Nothing else wakes it up.
++
++**Tool 2 — Web Unlocker: the shock quantifier**
++
++Only fires when Tool 1 trips the threshold. Fetches the live LME aluminum spot price from `metals-api.com` — a page that rate-limits and blocks automated traffic. Bright Data's unlocker rotates IPs and handles headers so the request lands cleanly and returns a JSON price. That number is divided against the baseline to compute `shock_pct` — the actual magnitude fed into the propagation function. Without a real price number, there is no `shock_pct`, and the propagator has nothing to propagate. The shock size is not a slider a human sets — it is a real price delta from the live web.
++
++**Tool 3 — Web Scraper API: the baseline anchor**
++
++Runs once at app startup. Scrapes SEC EDGAR for Boeing's latest cost of products and Delta's latest operating margin. EDGAR is technically public but notoriously difficult to parse reliably — the HTML structure varies by filing type and the server aggressively rate-limits bots. Bright Data's scraper gets through cleanly. When the punchline panel says "Delta's current margin is 7.1%," that number was scraped from the real SEC filing this morning — not hardcoded from 2023. That one detail is what makes a judge lean forward.
++
++**The dependency chain in code — one block that makes the case:**
++
++```python
++# signal_loop.py — the critical path
++if shock_score >= SHOCK_THRESHOLD:         # Tool 1 (SERP API) must fire this
++    live_price = get_lme_aluminum_price()  # Tool 2 (Web Unlocker) must return a number
++    shock_pct = compute_shock_pct(live_price)
++    chain = propagate_shock(GRAPH, node, shock_pct)  # now the engine runs
++```
++
++- Remove Tool 1 → `shock_score` never exceeds threshold → propagator never fires → demo shows nothing
++- Remove Tool 2 → `shock_pct` is zero or None → propagation magnitude is meaningless
++- Remove Tool 3 → baseline margin is hardcoded → punchline output is fake
++
++Every step depends on the previous one. That is what "Bright Data is the nervous system" means in practice.
++
++---
++
+ ## 8. The Causal Engine — Math & Code

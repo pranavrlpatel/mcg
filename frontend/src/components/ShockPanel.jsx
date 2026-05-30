@@ -6,7 +6,8 @@ export function ShockPanel({ onResult, headlines = [] }) {
 
   const handlePropagate = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/propagate', {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      const response = await axios.post(`${apiUrl}/propagate`, {
         shock_pct: sliderValue / 100, // sending as fraction to match logic
         start_node: 'bauxite'
       });

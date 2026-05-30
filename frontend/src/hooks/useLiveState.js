@@ -8,7 +8,8 @@ export function useLiveState() {
   useEffect(() => {
     const fetchEdges = async () => {
       try {
-        const resp = await fetch("http://localhost:8000/edges");
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const resp = await fetch(`${apiUrl}/edges`);
         const data = await resp.json();
         setEdges(data.edges);
       } catch(e) {
@@ -18,7 +19,8 @@ export function useLiveState() {
 
     const fetchBaselines = async () => {
       try {
-        const resp = await fetch("http://localhost:8000/baselines");
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const resp = await fetch(`${apiUrl}/baselines`);
         const data = await resp.json();
         setBaselines(data);
       } catch(e) {
@@ -31,7 +33,8 @@ export function useLiveState() {
 
     const poll = async () => {
       try {
-        const resp = await fetch("http://localhost:8000/live-state");
+        const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const resp = await fetch(`${apiUrl}/live-state`);
         const data = await resp.json();
         if (data.triggered) setState(data);
       } catch(e) {

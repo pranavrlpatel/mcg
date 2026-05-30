@@ -12,7 +12,7 @@ SHOCK_THRESHOLD = 0.0    # Tune lower so ANY news triggers the live demo graph
 
 def run_signal_loop(demo_mode: bool = False):
     interval = DEMO_INTERVAL if demo_mode else POLL_INTERVAL
-    print(f"[signal_loop] Starting — polling every {interval}s — demo_mode={demo_mode}")
+    print(f"[signal_loop] Starting - polling every {interval}s - demo_mode={demo_mode}")
 
     while True:
         try:
@@ -48,7 +48,7 @@ def run_signal_loop(demo_mode: bool = False):
                         "shock_score": shock_score
                     })
 
-                    print(f"[signal_loop] SHOCK FIRED: {node} +{shock_pct:.1%} → propagated")
+                    print(f"[signal_loop] SHOCK FIRED: {node} +{shock_pct:.1%} -> propagated")
                     break   # one shock per poll cycle — avoid cascade during demo
 
         except Exception as e:

@@ -55,11 +55,14 @@ export default function GraphView({ chain }) {
   }, [chain]);
 
   return (
-    <div style={{ width: '100%', height: '500px' }}>
-      <ReactFlow nodes={nodes} edges={edges} fitView>
-        <Background />
-        <Controls />
-      </ReactFlow>
+    <div className="glass-panel" style={{ width: '100%', height: '500px', display: 'flex', flexDirection: 'column' }}>
+      <h2 style={{ marginBottom: '16px' }}>📊 Causal Chain Propagation</h2>
+      <div style={{ flex: 1, width: '100%', minHeight: '400px', height: '100%' }}>
+        <ReactFlow nodes={nodes} edges={edges} fitView>
+          <Background color="#58a6ff" gap={16} />
+          <Controls />
+        </ReactFlow>
+      </div>
     </div>
   );
 }

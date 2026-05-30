@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import threading
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
